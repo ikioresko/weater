@@ -3,6 +3,7 @@ package com.weater.service;
 import com.weater.model.Role;
 import com.weater.model.User;
 import com.weater.repos.UserRepo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +19,8 @@ public class UserService implements UserDetailsService {
     private final UserRepo userRepo;
     private final MailSender mailSender;
     private final PasswordEncoder passwordEncoder;
+    @Value("${hostname}")
+    private String hostName;
 
     public UserService(UserRepo userRepo, MailSender mailSender, @Lazy PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
@@ -51,8 +54,9 @@ public class UserService implements UserDetailsService {
     private void sendMessage(User user) {
         if (!user.getEmail().isEmpty()) {
             String message = String.format("Hello, %s! \n" + "Welcome to Weater" +
-                            ". Please visit next link: http://localhost:8080/activate/%s",
+                            ". Please visit next link: https://%s/activate/%s",
                     user.getUsername(),
+                    hostName,
                     user.getActivationCode());
             mailSender.send(user.getEmail(), "Activation code", message);
         }
