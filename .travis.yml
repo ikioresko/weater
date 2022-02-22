@@ -5,6 +5,12 @@ jdk:
 
 sudo: false
 
+services:
+  - postgresql
+
+before_install:
+  - psql -c 'create database weater;' -U postgres
+
 notifications:
   email:
     recipients:

@@ -52,7 +52,7 @@ public class UserService implements UserDetailsService {
     }
 
     private void sendMessage(User user) {
-        if (!user.getEmail().isEmpty()) {
+        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
             String message = String.format("Hello, %s! \n" + "Welcome to Weater" +
                             ". Please visit next link: https://%s/activate/%s",
                     user.getUsername(),
@@ -69,7 +69,7 @@ public class UserService implements UserDetailsService {
         }
         user.setActivationCode(null);
         userRepo.save(user);
-        return false;
+        return true;
     }
 
     public List<User> findAll() {
@@ -96,7 +96,7 @@ public class UserService implements UserDetailsService {
                 userEmail != null && !userEmail.equals(email));
         if (isEmailChanged) {
             user.setEmail(email);
-            if (!email.isEmpty()) {
+            if (email != null && !email.isEmpty()) {
                 user.setActivationCode(UUID.randomUUID().toString());
             }
         }
